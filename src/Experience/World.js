@@ -1,12 +1,14 @@
 import * as THREE from 'three'
 import Experience from './Experience.js'
 import Baked from './Baked.js'
+import Background from './Background.js'
 import GoogleLeds from './GoogleLeds.js'
 import LoupedeckButtons from './LoupedeckButtons.js'
 import CoffeeSteam from './CoffeeSteam.js'
 import TopChair from './TopChair.js'
 import ElgatoLight from './ElgatoLight.js'
-import BouncingLogo from './BouncingLogo.js'
+//import BouncingLogo from './BouncingLogo.js'
+import TVScreen from './TVScreen.js'
 import Screen from './Screen.js'
 
 export default class World
@@ -22,16 +24,23 @@ export default class World
         {
             if(_group.name === 'base')
             {
+                this.setBackground()
                 this.setBaked()
                 this.setGoogleLeds()
                 this.setLoupedeckButtons()
                 this.setCoffeeSteam()
                 this.setTopChair()
                 this.setElgatoLight()
-                this.setBouncingLogo()
+                //this.setBouncingLogo()
                 this.setScreens()
+//                this.setTVScreen()
             }
         })
+    }
+
+    setBackground()
+    {
+        this.background = new Background()
     }
 
     setBaked()
@@ -69,6 +78,10 @@ export default class World
         this.bouncingLogo = new BouncingLogo()
     }
 
+    setTVScreen() {
+        this.tvScreen = new TVScreen()
+    }
+
     setScreens()
     {
         this.pcScreen = new Screen(
@@ -77,7 +90,7 @@ export default class World
         )
         this.macScreen = new Screen(
             this.resources.items.macScreenModel.scene.children[0],
-            '/assets/videoStream.mp4'
+            '/assets/proposal.webm'
         )
     }
 
@@ -101,6 +114,9 @@ export default class World
 
         if(this.bouncingLogo)
             this.bouncingLogo.update()
+
+        if(this.background)
+            this.background.update()
     }
 
     destroy()

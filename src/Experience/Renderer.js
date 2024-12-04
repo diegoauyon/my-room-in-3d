@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import Experience from './Experience.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
@@ -15,6 +16,7 @@ export default class Renderer
         this.sizes = this.experience.sizes
         this.scene = this.experience.scene
         this.camera = this.experience.camera
+        this.cssScene = this.experience.cssScene;
         
         this.usePostprocess = false
 
@@ -28,8 +30,9 @@ export default class Renderer
 
         // Renderer
         this.instance = new THREE.WebGLRenderer({
-            alpha: false,
-            antialias: true
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance',
         })
         this.instance.domElement.style.position = 'absolute'
         this.instance.domElement.style.top = 0
@@ -51,6 +54,16 @@ export default class Renderer
         // this.instance.toneMappingExposure = 1.3
 
         this.context = this.instance.getContext()
+
+        // Set CSS Scene
+        this.cssInstance = new CSS3DRenderer();
+        this.cssInstance.setSize(this.sizes.width, this.sizes.height);
+        this.cssInstance.domElement.style.position = 'absolute';
+        this.cssInstance.domElement.style.top = '0px';
+
+        document
+            .querySelector('#css')
+            ?.appendChild(this.cssInstance.domElement);
 
         // Add stats panel
         if(this.stats)
@@ -95,6 +108,7 @@ export default class Renderer
     {
         // Instance
         this.instance.setSize(this.config.width, this.config.height)
+        this.cssInstance.setSize(this.config.width, this.config.height);
         this.instance.setPixelRatio(this.config.pixelRatio)
 
         // Post process
@@ -117,6 +131,8 @@ export default class Renderer
         {
             this.instance.render(this.scene, this.camera.instance)
         }
+
+        this.cssInstance.render(this.cssScene, this.camera.instance);
 
         if(this.stats)
         {
