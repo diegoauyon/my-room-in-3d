@@ -10,6 +10,7 @@ import ElgatoLight from './ElgatoLight.js'
 //import BouncingLogo from './BouncingLogo.js'
 import TVScreen from './TVScreen.js'
 import Screen from './Screen.js'
+import Cat from './Cat.js'
 
 export default class World
 {
@@ -33,7 +34,8 @@ export default class World
                 this.setElgatoLight()
                 //this.setBouncingLogo()
                 this.setScreens()
-//                this.setTVScreen()
+                this.setTVScreen()
+                this.setCat()
             }
         })
     }
@@ -82,6 +84,10 @@ export default class World
         this.tvScreen = new TVScreen()
     }
 
+    setCat() {
+        this.cat = new Cat()
+    }
+
     setScreens()
     {
         this.pcScreen = new Screen(
@@ -117,6 +123,9 @@ export default class World
 
         if(this.background)
             this.background.update()
+
+        if(this.cat)
+            this.cat.update()
     }
 
     destroy()

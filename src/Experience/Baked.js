@@ -29,7 +29,7 @@ export default class CoffeeSteam
     setModel()
     {
         this.model = {}
-        
+        console.log(this.resources.items.roomModel)
         this.model.mesh = this.resources.items.roomModel.scene.children[0]
 
         this.model.bakedDayTexture = this.resources.items.bakedDayTexture

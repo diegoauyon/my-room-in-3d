@@ -4,6 +4,7 @@ export default [
         data: {},
         items:
         [
+            { name: 'cat', source: '/assets/cat.glb', type: 'model' },
             { name: 'discTexture', source: '/assets/disc.png', type: 'texture' },
             { name: 'googleHomeLedMaskTexture', source: '/assets/googleHomeLedMask.png', type: 'texture' },
             { name: 'googleHomeLedsModel', source: '/assets/googleHomeLedsModel.glb', type: 'model' },

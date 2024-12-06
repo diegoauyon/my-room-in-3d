@@ -132,7 +132,11 @@ export default class Renderer
             this.instance.render(this.scene, this.camera.instance)
         }
 
-        this.cssInstance.render(this.cssScene, this.camera.instance);
+
+        if (this.cssInstance) {
+            this.cssInstance.render(this.cssScene, this.camera.instance);
+        }
+        
 
         if(this.stats)
         {
