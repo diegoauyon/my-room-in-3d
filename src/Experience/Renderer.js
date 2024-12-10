@@ -17,6 +17,7 @@ export default class Renderer
         this.scene = this.experience.scene
         this.camera = this.experience.camera
         this.cssScene = this.experience.cssScene;
+        this.cssSceneMonitor = this.experience.cssSceneMonitor;
         
         this.usePostprocess = false
 
@@ -65,9 +66,12 @@ export default class Renderer
         this.cssInstance.domElement.style.position = 'absolute';
         this.cssInstance.domElement.style.top = '0px';
 
-        // document
-        //     .querySelector('#css')
-        //     ?.appendChild(this.cssInstance.domElement);
+        // Set second CSS Scene
+
+        this.cssInstanceMonitor = new CSS3DRenderer();
+        this.cssInstanceMonitor.setSize(this.sizes.width, this.sizes.height);
+        this.cssInstanceMonitor.domElement.style.position = 'absolute';
+        this.cssInstanceMonitor.domElement.style.top = '0px';
 
                
 
@@ -117,6 +121,7 @@ export default class Renderer
         this.instance.setPixelRatio(this.config.pixelRatio)
 
         this.cssInstance.setSize(this.config.width, this.config.height);
+        this.cssInstanceMonitor.setSize(this.config.width, this.config.height);
         
 
         // Post process
@@ -144,6 +149,10 @@ export default class Renderer
 
         if (this.cssInstance) {
             this.cssInstance.render(this.cssScene, this.camera.instance);
+        }
+
+        if (this.cssInstanceMonitor && this.cssSceneMonitor) {
+            this.cssInstanceMonitor.render(this.cssSceneMonitor, this.camera.instance);
         }
         
 

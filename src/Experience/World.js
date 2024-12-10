@@ -8,10 +8,11 @@ import CoffeeSteam from './CoffeeSteam.js'
 import TopChair from './TopChair.js'
 import ElgatoLight from './ElgatoLight.js'
 //import BouncingLogo from './BouncingLogo.js'
-import TVScreen from './TVScreen.js'
+//import TVScreen from './TVScreen.js'
 import Screen from './Screen.js'
 import Cat from './Cat.js'
-import MonitorScreen from './Monitor.js'
+import Screens from './Screens.js'
+//import MonitorScreen from './Monitor.js'
 
 export default class World
 {
@@ -35,8 +36,8 @@ export default class World
                 this.setElgatoLight()
                 //this.setBouncingLogo()
                 this.setScreens()
-                this.setTVScreen()
-                this.setMonitorScreen()
+                // this.setTVScreen()
+                // this.setMonitorScreen()
                 this.setCat()
             }
         })
@@ -100,6 +101,8 @@ export default class World
             this.resources.items.macScreenModel.scene.children[0],
             '/assets/proposal.webm'
         )
+
+        this.screens = new Screens();
     }
 
     resize()
@@ -108,6 +111,9 @@ export default class World
 
     update()
     {
+        if(this.baked)
+            this.baked.update()
+        
         if(this.googleLeds)
             this.googleLeds.update()
 

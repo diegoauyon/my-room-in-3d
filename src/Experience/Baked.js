@@ -4,7 +4,7 @@ import Experience from './Experience.js'
 import vertexShader from './shaders/baked/vertex.glsl'
 import fragmentShader from './shaders/baked/fragment.glsl'
 
-export default class CoffeeSteam
+export default class Baked
 {
     constructor()
     {
@@ -47,8 +47,8 @@ export default class CoffeeSteam
         this.model.lightMapTexture.flipY = false
 
         this.colors = {}
-        this.colors.tv = '#ff115e'
-        this.colors.desk = '#ff6700'
+        this.colors.tv = '#6e92e2'
+        this.colors.desk = '#ffffff'
         this.colors.pc = '#0082ff'
 
         this.model.material = new THREE.ShaderMaterial({
@@ -156,5 +156,15 @@ export default class CoffeeSteam
                     { label: 'uLightPcStrength', min: 0, max: 3 }
                 )
         }
+    }
+
+
+    update() {
+        const timeElapsed = this.time.elapsed * 0.001
+        const timeElapsedSin = (Math.sin(timeElapsed) +1) / 2
+        const value = timeElapsedSin * 0.5 
+        
+        this.model.material.uniforms.uNightMix.value = value
+        //this.model.material.uniforms.uNeutralMix.value = value
     }
 }

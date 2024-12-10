@@ -72,7 +72,7 @@ export default class Camera extends EventEmitter
         callback,
     ) {
         if (this.currentKeyframe === key) return;
-        console.log('transitioning to', key);
+        //console.log('transitioning to', key);
 
         if (this.targetKeyframe) TWEEN.removeAll();
 
@@ -105,33 +105,33 @@ export default class Camera extends EventEmitter
     setTVListeners() {
         this.on('enterTV', () => {
 
-            console.log('!!!!!!!!!enterTV');
+            //console.log('!!!!!!!!!enterTV');
             this.transition(
                 TV,
                 2000,
                 BezierEasing(0.13, 0.99, 0, 1)
             );
-            UIEventBus.dispatch('enterTV', {});
+            //UIEventBus.dispatch('enterTV', {});
         });
         this.on('leftTV', () => {
             this.transition(IDLE);
-            UIEventBus.dispatch('leftTV', {});
+            //UIEventBus.dispatch('leftTV', {});
         });
     }
 
     setMonitorListeners() {
         this.on('enterMonitor', () => {
-            console.log('!!!!!!!!!enterMonitor');
+            //console.log('!!!!!!!!!enterMonitor');
             this.transition(
                 MONITOR,
                 2000,
                 BezierEasing(0.13, 0.99, 0, 1)
             );
-            UIEventBus.dispatch('enterMonitor', {});
+           // UIEventBus.dispatch('enterMonitor', {});
         });
         this.on('leftMonitor', () => {
             this.transition(IDLE);
-            UIEventBus.dispatch('leftMonitor', {});
+           // UIEventBus.dispatch('leftMonitor', {});
         });
     }
 

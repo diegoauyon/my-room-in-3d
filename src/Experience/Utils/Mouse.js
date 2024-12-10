@@ -11,6 +11,7 @@ export default class Mouse extends EventEmitter {
         this.rayCoords = new THREE.Vector2();
         this.inComputer = false;
         this.inTVScreen = false;
+        this.seenScreen = null;
 
         // Resize event
         this.on('mousemove', (event) => {
@@ -20,8 +21,12 @@ export default class Mouse extends EventEmitter {
                 this.rayCoords.x = (this.x / window.innerWidth) * 2 - 1;
                 this.rayCoords.y = -(this.y / window.innerHeight) * 2 + 1;
             }
-            this.inComputer = event.inComputer ? true : false;
-            this.inTVScreen = event.inTVScreen ? true : false;
+
+            console.log('[!!||||||||||]', event)
+
+            this.seenScreen = event.seenScreen ? event.seenScreen : null;
+            this.inComputer = event.seenScreen === 'monitor' ? true : false;
+            this.inTVScreen = event.seenScreen === 'tv' ? true : false;
         });
     }
 }

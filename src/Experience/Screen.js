@@ -45,11 +45,6 @@ export default class Screen
         this.model.mesh = this.mesh
         this.model.mesh.material = this.model.material
         this.scene.add(this.model.mesh)
-
-        console.log('position', this.model.mesh.position)
-        console.log('rotation', this.model.mesh.rotation)
-        console.log('quaternion', this.model.mesh.quaternion)
-        console.log('scale', this.model.mesh.scale)
     }
 
     update()

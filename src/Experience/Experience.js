@@ -29,6 +29,7 @@ export default class Experience
         // Options
         this.targetElement = _options.targetElement
         this.cssElement = _options.cssElement
+        this.cssElementMonitor = _options?.cssElementMonitor
 
         if(!this.targetElement)
         {
@@ -39,7 +40,7 @@ export default class Experience
         this.time = new Time()
         this.sizes = new Sizes()
 
-        this.setMouse()
+        //this.setMouse()
         this.setConfig()
         this.setStats()
         this.setDebug()
@@ -124,6 +125,7 @@ export default class Experience
     setCSSScene()
     {
         this.cssScene = new THREE.Scene();
+        this.cssSceneMonitor = new THREE.Scene();
     }
 
     setCamera()
@@ -137,6 +139,11 @@ export default class Experience
 
         this.targetElement.appendChild(this.renderer.instance.domElement)
         this.cssElement?.appendChild(this.renderer.cssInstance.domElement);
+
+        if (this.cssElementMonitor) {
+            this.cssElementMonitor?.appendChild(this.renderer.cssInstanceMonitor.domElement);
+        }
+   
     }
 
     setResources()
