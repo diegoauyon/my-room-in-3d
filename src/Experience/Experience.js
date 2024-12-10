@@ -12,6 +12,7 @@ import World from './World.js'
 import Navigation from './Navigation.js'
 
 import assets from './assets.js'
+import Mouse from './Utils/Mouse.js'
 
 export default class Experience
 {
@@ -36,6 +37,8 @@ export default class Experience
 
         this.time = new Time()
         this.sizes = new Sizes()
+
+        this.setMouse()
         this.setConfig()
         this.setStats()
         this.setDebug()
@@ -45,7 +48,10 @@ export default class Experience
         this.setRenderer()
         this.setResources()
         this.setWorld()
-        this.setNavigation()
+        //this.setNavigation()
+        
+        this.setRaycaster()
+        
         
         this.sizes.on('resize', () =>
         {
@@ -68,6 +74,10 @@ export default class Experience
         
     //     return Experience.instance
     // }
+
+    setRaycaster() {
+        this.raycaster = new THREE.Raycaster();
+    }
 
     setConfig()
     {
@@ -141,6 +151,13 @@ export default class Experience
     {
         this.navigation = new Navigation()
     }
+
+
+    setMouse()
+    {
+        this.mouse = new Mouse()
+    }
+
 
     update()
     {

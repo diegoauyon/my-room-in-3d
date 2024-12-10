@@ -25,7 +25,7 @@ export default class Navigation
         this.view.spherical.smoothed = this.view.spherical.value.clone()
         this.view.spherical.smoothing = 0.005
         this.view.spherical.limits = {}
-        this.view.spherical.limits.radius = { min: 10, max: 50 }
+        this.view.spherical.limits.radius = { min: 10, max: 90 }
         this.view.spherical.limits.phi = { min: 0.01, max: Math.PI * 0.5 }
         this.view.spherical.limits.theta = { min: - Math.PI * 0.5, max: 0 }
 
@@ -234,5 +234,7 @@ export default class Navigation
 
         this.camera.modes.default.instance.position.copy(viewPosition)
         this.camera.modes.default.instance.lookAt(this.view.target.smoothed)
+
+        console.log('-----------', viewPosition)
     }
 }

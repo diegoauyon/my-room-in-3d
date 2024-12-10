@@ -5,6 +5,7 @@ export default [
         items:
         [
             { name: 'cat', source: '/assets/cat.glb', type: 'model' },
+            { name: 'catTexture', source: '/assets/cat.jpeg', type: 'texture' },
             { name: 'discTexture', source: '/assets/disc.png', type: 'texture' },
             { name: 'googleHomeLedMaskTexture', source: '/assets/googleHomeLedMask.png', type: 'texture' },
             { name: 'googleHomeLedsModel', source: '/assets/googleHomeLedsModel.glb', type: 'model' },
@@ -27,7 +28,7 @@ export default [
             { name: 'bakedNightTexture', source: '/assets/bakedNight.jpg', type: 'texture' },
             { name: 'bakedNeutralTexture', source: '/assets/bakedNeutral.jpg', type: 'texture' },
             { name: 'lightMapTexture', source: '/assets/lightMap.jpg', type: 'texture' },
-            { name: 'roomModel', source: '/assets/roomModel.glb' },
+            { name: 'roomModel', source: '/assets/room.glb' },
         ]
     }
 ]

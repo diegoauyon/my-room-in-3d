@@ -52,7 +52,6 @@ export default class TopChair
 
 		const particles = new THREE.Points( this.geometry, this.material );
 
-        console.log(particles)
         this.scene.add(particles)
         
         

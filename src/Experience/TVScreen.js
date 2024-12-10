@@ -2,6 +2,7 @@ import * as THREE from "three";
 import { CSS3DObject } from "three/examples/jsm/renderers/CSS3DRenderer.js";
 
 import Experience from "./Experience.js";
+import { TabApi } from "tweakpane";
 
 const SCREEN_SIZE = { w: 1280, h: 1024 };
 const IFRAME_PADDING = 0;
@@ -23,6 +24,10 @@ export default class TVScreen {
     this.scene = this.experience.scene;
     this.world = this.experience.world;
     this.time = this.experience.time;
+    this.mouse = this.experience.mouse;
+    this.raycaster = this.experience.raycaster;
+    this.camera = this.experience.camera;
+
     this.screenSize = new THREE.Vector2(SCREEN_SIZE.w, SCREEN_SIZE.h);
     this.position = new THREE.Vector3(4.2, 2.671, 1.834);
     this.rotation = new THREE.Euler(0, -Math.PI * 0.5, 0);
@@ -34,11 +39,12 @@ export default class TVScreen {
     if (this.debug) {
       this.debugFolder = this.debug.addFolder({
         title: "tvScreen",
-        expanded: true,
+        expanded: false,
       });
     }
+
     this.createIframe();
-    //this.createPhotoAlbum()
+    this.initializeScreenEvents();
   }
 
   /**
@@ -83,7 +89,11 @@ export default class TVScreen {
     mesh.scale.setY(scaleY);
     mesh.scale.setX(scaleX);
 
+    mesh.name = "tv-screen";
+
     this.mesh = mesh;
+
+    this.array = [];
 
     // Add to gl scene
     this.scene.add(this.mesh);
@@ -178,73 +188,79 @@ export default class TVScreen {
 
   initializeScreenEvents() {
     document.addEventListener(
-        'mousemove',
-        (event) => {
-            const id = event.target.id;
-            if (id === 'tv-screen') {
-                event.inTVScreen = true;
-            }
+      "mousemove",
+      (event) => {
 
-            this.inTVScreen = event.inTVScreen;
+        if (this?.mouse?.rayCoords) {
+          this.raycaster.setFromCamera(this.mouse.rayCoords, this.camera.instance);
 
-            if (this.inTVScreen && !this.prevInTV) {
-                this.camera.trigger('enterTV');
-            }
+          const intersects = this.raycaster.intersectObjects(
+            this.scene.children,
+            false
+          );
 
-            if (
-                !this.inTVScreen &&
-                this.prevInTV &&
-                !this.mouseClickInProgress
-            ) {
-                this.camera.trigger('leftTV');
-            }
+          if (intersects.length > 0 && intersects[0].object.name === "tv-screen") {
+            // var target = new THREE.Vector3()
+            // this.object.getWorldPosition(target)
+            // console.log( intersects[0].object)
+            // console.log(target)
+            event.inTVScreen = true;
+          }
+        }
+        
 
-            if (
-                !this.inTVScreen &&
-                this.mouseClickInProgress &&
-                this.prevInTV
-            ) {
-                this.shouldLeaveTV = true;
-            } else {
-                this.shouldLeaveTV = false;
-            }
+        this.inTVScreen = event.inTVScreen;
 
-            this.application.mouse.trigger('mousemove', [event]);
+        if (this.inTVScreen && !this.prevInTV) {
+          //console.log("enterTV");
+          this.camera.trigger("enterTV");
+        }
 
-            this.prevInTV = this.inTVScreen;
-        },
-        false
+        if (!this.inTVScreen && this.prevInTV && !this.mouseClickInProgress) {
+          this.camera.trigger("leftTV");
+        }
+
+        if (!this.inTVScreen && this.mouseClickInProgress && this.prevInTV) {
+          this.shouldLeaveTV = true;
+        } else {
+          this.shouldLeaveTV = false;
+        }
+
+        this.experience.mouse.trigger("mousemove", [event]);
+
+        this.prevInTV = this.inTVScreen;
+      },
+      false
     );
     document.addEventListener(
-        'mousedown',
-        (event) => {
-            // @ts-ignore
-            this.inTVScreen = event.inTVScreen;
-            this.application.mouse.trigger('mousedown', [event]);
+      "mousedown",
+      (event) => {
+        this.inTVScreen = event.inTVScreen;
+        this.experience.mouse.trigger("mousedown", [event]);
 
-            this.mouseClickInProgress = true;
-            this.prevInTV = this.inTVScreen;
-        },
-        false
+        this.mouseClickInProgress = true;
+        this.prevInTV = this.inTVScreen;
+      },
+      false
     );
     document.addEventListener(
-        'mouseup',
-        (event) => {
-            // @ts-ignore
-            this.inTVScreen = event.inTVScreen;
-            this.application.mouse.trigger('mouseup', [event]);
+      "mouseup",
+      (event) => {
+        // @ts-ignore
+        this.inTVScreen = event.inTVScreen;
+        this.experience.mouse.trigger("mouseup", [event]);
 
-            if (this.shouldLeaveTV) {
-                this.camera.trigger('leftMonitor');
-                this.shouldLeaveTV = false;
-            }
+        if (this.shouldLeaveTV) {
+          this.camera.trigger("leftMonitor");
+          this.shouldLeaveTV = false;
+        }
 
-            this.mouseClickInProgress = false;
-            this.prevInTV = this.inTVScreen;
-        },
-        false
+        this.mouseClickInProgress = false;
+        this.prevInTV = this.inTVScreen;
+      },
+      false
     );
-}
+  }
 
   /**
    * Creates the iframe for the computer screen
@@ -270,7 +286,6 @@ export default class TVScreen {
             cancelable: false,
           });
 
-          // @ts-ignore
           evt.inTVScreen = true;
           if (event.data.type === "mousemove") {
             var clRect = iframe.getBoundingClientRect();

@@ -35,10 +35,11 @@ export default class Renderer
             powerPreference: 'high-performance',
         })
         this.instance.domElement.style.position = 'absolute'
+        this.instance.domElement.style.zIndex = '1px';
         this.instance.domElement.style.top = 0
         this.instance.domElement.style.left = 0
-        this.instance.domElement.style.width = '100%'
-        this.instance.domElement.style.height = '100%'
+        // this.instance.domElement.style.width = '100%'
+        // this.instance.domElement.style.height = '100%'
 
         // this.instance.setClearColor(0x414141, 1)
         this.instance.setClearColor(this.clearColor, 1)
@@ -64,6 +65,12 @@ export default class Renderer
         document
             .querySelector('#css')
             ?.appendChild(this.cssInstance.domElement);
+
+        this.uniforms = {
+            u_time: { value: 1 },
+        };
+
+        
 
         // Add stats panel
         if(this.stats)
@@ -108,8 +115,10 @@ export default class Renderer
     {
         // Instance
         this.instance.setSize(this.config.width, this.config.height)
-        this.cssInstance.setSize(this.config.width, this.config.height);
         this.instance.setPixelRatio(this.config.pixelRatio)
+
+        this.cssInstance.setSize(this.config.width, this.config.height);
+        
 
         // Post process
         this.postProcess.composer.setSize(this.config.width, this.config.height)
@@ -118,6 +127,7 @@ export default class Renderer
 
     update()
     {
+        this.camera.instance.updateProjectionMatrix();
         if(this.stats)
         {
             this.stats.beforeRender()
