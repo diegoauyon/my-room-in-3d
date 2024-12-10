@@ -28,12 +28,13 @@ export default class Experience
 
         // Options
         this.targetElement = _options.targetElement
+        this.cssElement = _options.cssElement
 
         if(!this.targetElement)
         {
             console.warn('Missing \'targetElement\' property')
             return
-        }
+        } 
 
         this.time = new Time()
         this.sizes = new Sizes()
@@ -48,7 +49,7 @@ export default class Experience
         this.setRenderer()
         this.setResources()
         this.setWorld()
-        //this.setNavigation()
+        this.setNavigation()
         
         this.setRaycaster()
         
@@ -135,6 +136,7 @@ export default class Experience
         this.renderer = new Renderer({ rendererInstance: this.rendererInstance })
 
         this.targetElement.appendChild(this.renderer.instance.domElement)
+        this.cssElement?.appendChild(this.renderer.cssInstance.domElement);
     }
 
     setResources()

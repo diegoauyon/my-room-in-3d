@@ -18,13 +18,15 @@ const keys = {
         focalPoint: new THREE.Vector3(0,2, 0),
     },
     monitor: {
-        position: new THREE.Vector3(-27.561057370818336, 3.378237925579467,  0.4985747917354551),
-        focalPoint: new THREE.Vector3(4.2, 2.6, 1.8),
+        position: new THREE.Vector3(-3.9999988871752135,4.000000000000002, 0.002583979008661607),
+        focalPoint: new THREE.Vector3(0.3067377805709839,3.360666036605835, -4.590847492218018),
+        quaternion: new THREE.Quaternion(-0.4996154010295868, 
+            0.4996153712272644, -0.042695833567610704, -0.5003843307495117,0.5003843307495117),
     },
     tv: {
-        position: new THREE.Vector3(-13.9999988871752135, 20.000000000000002,  10.002583979008661607),
+        position: new THREE.Vector3(-2.9999988871752135, 3.000000000000002,  0.002583979008661607),
         focalPoint: new THREE.Vector3(4.2, 2.6, 1.8),
-        quaternion: new THREE.Quaternion(-0.04347517922103461, -10.6993808914249738, -0.042695833567610704, 0.7121469955685236),
+        quaternion: new THREE.Quaternion(-0.04347517922103461, -0.6993808914249738, -0.042695833567610704, 0.7121469955685236),
     },
     loading: {
         position: new THREE.Vector3(-27.561057370818336, 25.378237925579467,  35.4985747917354551),
@@ -58,7 +60,7 @@ export class MonitorKeyframe extends CameraKeyframeInstance {
 export class TVKeyframe extends CameraKeyframeInstance {
 
     constructor() {
-        const keyframe = keys.monitor;
+        const keyframe = keys.tv;
         super(keyframe);
         this.experience = new Experience();
         this.sizes = this.experience.sizes;
@@ -68,7 +70,7 @@ export class TVKeyframe extends CameraKeyframeInstance {
 
     update() {
         const aspect = this.sizes.height / this.sizes.width;
-        const additionalZoom = this.sizes.width < 768 ? 3 : -14;
+        const additionalZoom = this.sizes.width < 768 ? 27: 15;
         this.targetPos.x= this.origin.x + aspect * 12 - additionalZoom;
         this.position.copy(this.targetPos);
     }

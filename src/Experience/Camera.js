@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import Experience from './Experience.js'
 import TWEEN from '@tweenjs/tween.js';
-import { DeskKeyframe, IdleKeyframe, LoadingKeyframe, MonitorKeyframe, OrbitControlsStart, TVKeyframe } from './CameraKeyframes.js'
+import { IdleKeyframe, LoadingKeyframe, MonitorKeyframe, TVKeyframe } from './CameraKeyframes.js'
 import UIEventBus from './Utils/EventBus.js';
 import EventEmitter from './Utils/EventEmitter.js';
 import BezierEasing from 'bezier-easing';
@@ -29,6 +29,7 @@ export default class Camera extends EventEmitter
         this.position = new THREE.Vector3(0, 0, 0);
         this.focalPoint = new THREE.Vector3(0, 0, 0);
         this.quaternion = undefined
+        this.isMobile = this.sizes.width < 1024
 
         // Set up
         this.mode = 'default' // default \ debug
@@ -39,14 +40,19 @@ export default class Camera extends EventEmitter
             monitor: new MonitorKeyframe(),
             tv: new TVKeyframe(),
             desk: new LoadingKeyframe(),
-            orbitControlsStart: new OrbitControlsStart(),
         };
 
-        this.setPostLoadTransition();
+        
         this.setInstance()
-        this.setMonitorListeners();
-        this.setTVListeners()
         this.setModes()
+
+
+        if (!this.isMobile) {
+            this.setPostLoadTransition();
+            this.setMonitorListeners();
+            this.setTVListeners()
+        }
+        
     }
 
     setInstance()
@@ -79,7 +85,6 @@ export default class Camera extends EventEmitter
             .to(keyframe.position, duration)
             .easing(easing || TWEEN.Easing.Quintic.InOut)
             .onComplete(() => {
-//                console.log('complete');
                 this.currentKeyframe = key;
                 this.targetKeyframe = undefined;
                 if (callback) callback();
@@ -116,6 +121,7 @@ export default class Camera extends EventEmitter
 
     setMonitorListeners() {
         this.on('enterMonitor', () => {
+            console.log('!!!!!!!!!enterMonitor');
             this.transition(
                 MONITOR,
                 2000,
@@ -163,39 +169,31 @@ export default class Camera extends EventEmitter
             this.keyframes[_key].update();
         }
 
-        if (this.currentKeyframe) {
-            console.log(this.currentKeyframe);
-            const keyframe = this.keyframes[this.currentKeyframe];
-            this.position.copy(keyframe.position);
-            this.focalPoint.copy(keyframe.focalPoint);
-            
-            if (keyframe?.quaternion) {
-                this.quaternion.copy(keyframe.quaternion);
-            } else {
-                this.quaternion = undefined;
+        if (!this.isMobile) {
+            if (this.currentKeyframe) {
+                const keyframe = this.keyframes[this.currentKeyframe];
+                this.position.copy(keyframe.position);
+                this.focalPoint.copy(keyframe.focalPoint);
+                
+                if (keyframe?.quaternion) {
+                    this.quaternion.copy(keyframe.quaternion);
+                } else {
+                    this.quaternion = undefined;
+                }
             }
-
             
-
+            this.instance.position.copy(this.position);
+            this.instance.lookAt(this.focalPoint);
+    
+            if (this.quaternion){
+                this.instance.quaternion.copy(this.quaternion)
+            }
         } else {
-            //this.instance.position.copy(this.modes[this.mode].instance.position);
-            //this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion)
-        }
-        this.instance.position.copy(this.position);
-        this.instance.lookAt(this.focalPoint);
-
-        if (this.quaternion){
-            this.instance.quaternion.copy(this.quaternion)
+            this.instance.position.copy(this.modes.default.instance.position)
+            this.instance.quaternion.copy(this.modes.default.instance.quaternion)
+            this.instance.updateMatrixWorld()
         }
         
-
-        
-
-        
-//        this.instance.lookAt(this.focalPoint);
-
-
-        //console.log(this.instance.position, this.instance.quaternion);
 
         // Apply coordinates
         // this.instance.position.copy(this.modes[this.mode].instance.position)

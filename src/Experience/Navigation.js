@@ -234,7 +234,5 @@ export default class Navigation
 
         this.camera.modes.default.instance.position.copy(viewPosition)
         this.camera.modes.default.instance.lookAt(this.view.target.smoothed)
-
-        console.log('-----------', viewPosition)
     }
 }

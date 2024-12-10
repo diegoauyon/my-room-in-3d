@@ -11,6 +11,7 @@ import ElgatoLight from './ElgatoLight.js'
 import TVScreen from './TVScreen.js'
 import Screen from './Screen.js'
 import Cat from './Cat.js'
+import MonitorScreen from './Monitor.js'
 
 export default class World
 {
@@ -35,6 +36,7 @@ export default class World
                 //this.setBouncingLogo()
                 this.setScreens()
                 this.setTVScreen()
+                this.setMonitorScreen()
                 this.setCat()
             }
         })
@@ -84,16 +86,16 @@ export default class World
         this.tvScreen = new TVScreen()
     }
 
+    setMonitorScreen() {
+        this.monitorScreen = new MonitorScreen()
+    }
+
     setCat() {
         this.cat = new Cat()
     }
 
     setScreens()
     {
-        this.pcScreen = new Screen(
-            this.resources.items.pcScreenModel.scene.children[0],
-            '/assets/videoPortfolio.mp4'
-        )
         this.macScreen = new Screen(
             this.resources.items.macScreenModel.scene.children[0],
             '/assets/proposal.webm'

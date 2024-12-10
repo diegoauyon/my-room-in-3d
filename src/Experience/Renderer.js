@@ -42,13 +42,16 @@ export default class Renderer
         // this.instance.domElement.style.height = '100%'
 
         // this.instance.setClearColor(0x414141, 1)
-        this.instance.setClearColor(this.clearColor, 1)
+    //        this.instance.setClearColor(this.clearColor, 1)
         this.instance.setSize(this.config.width, this.config.height)
         this.instance.setPixelRatio(this.config.pixelRatio)
+        //this.instance.setPixelRatio(Math.min(this.sizes.pixelRatio, 2));
+        this.instance.setClearColor(0x000000, 0.0);
+        this.instance.outputEncoding = THREE.sRGBEncoding
 
         // this.instance.physicallyCorrectLights = true
         // this.instance.gammaOutPut = true
-        this.instance.outputEncoding = THREE.sRGBEncoding
+        
         // this.instance.shadowMap.type = THREE.PCFSoftShadowMap
         // this.instance.shadowMap.enabled = false
         // this.instance.toneMapping = THREE.ReinhardToneMapping
@@ -62,15 +65,11 @@ export default class Renderer
         this.cssInstance.domElement.style.position = 'absolute';
         this.cssInstance.domElement.style.top = '0px';
 
-        document
-            .querySelector('#css')
-            ?.appendChild(this.cssInstance.domElement);
+        // document
+        //     .querySelector('#css')
+        //     ?.appendChild(this.cssInstance.domElement);
 
-        this.uniforms = {
-            u_time: { value: 1 },
-        };
-
-        
+               
 
         // Add stats panel
         if(this.stats)
