@@ -97,7 +97,7 @@ export default class Experience
         
         // Debug
         // this.config.debug = window.location.hash === '#debug'
-        this.config.debug = this.config.width > 420
+        this.config.debug = window.location.hash === '#debug'
     }
 
     setStats()

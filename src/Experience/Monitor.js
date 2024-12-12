@@ -212,11 +212,8 @@ export default class MonitorScreen {
       "mousemove",
       (event) => {
         const id = event.target.id;
-        console.log(id);
         if (id === "computer-screen") {
-          // @ts-ignore
           event.inComputer = true;
-          console.log("in computer");
         }
 
         // if (this?.mouse?.rayCoords) {

@@ -150,12 +150,13 @@ export default class Camera extends EventEmitter
 
     resize()
     {
-        this.instance.aspect = this.config.width / this.config.height
-        this.instance.updateProjectionMatrix()
-
-        this.modes.default.instance.aspect = this.config.width / this.config.height
-        this.modes.default.instance.updateProjectionMatrix()
-
+        if (this.isMobile) {
+            this.modes.default.instance.aspect = this.config.width / this.config.height
+            this.modes.default.instance.updateProjectionMatrix()
+        } else {
+            this.instance.aspect = this.config.width / this.config.height
+            this.instance.updateProjectionMatrix()
+        }
     }
 
     update()
@@ -198,7 +199,7 @@ export default class Camera extends EventEmitter
         // Apply coordinates
         // this.instance.position.copy(this.modes[this.mode].instance.position)
         // this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion)
-//        this.instance.updateMatrixWorld() // To be used in projection
+        //this.instance.updateMatrixWorld() // To be used in projection
     }
 
     destroy()

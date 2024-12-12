@@ -73,7 +73,7 @@ export default class Screens {
         object: null,
         mesh: null,
         name: MONITOR,
-        src: "https://os.henryheffernan.com/"
+        src: "http://localhost:3000/"
       }
       
     }
@@ -133,132 +133,165 @@ export default class Screens {
     this.scene.add(this.screens[screenName].mesh);
   }
 
-  initializeScreenEvents() {
-    document.addEventListener(
-      "mousemove",
-      debounce((event) => {
-        const id = event.target.id;
-        if (id === TV) {
-          event.seenScreen = TV;
-        } else if (id === MONITOR) {
-          event.seenScreen = MONITOR;
-        } else {
-          event.seenScreen = null;
-        }
+  movement() {
+    return debounce((event) => {
+      const id = event.target.id;
+      if (id === TV) {
+        event.seenScreen = TV;
+      } else if (id === MONITOR) {
+        event.seenScreen = MONITOR;
+      } else {
+        event.seenScreen = null;
+      }
 
-        // let id = null;
-        // if (this?.mouse?.rayCoords) {
-        //   this.raycaster.setFromCamera(
-        //     this.mouse.rayCoords,
-        //     this.camera.instance
-        //   );
+      // let id = null;
+      // if (this?.mouse?.rayCoords) {
+      //   this.raycaster.setFromCamera(
+      //     this.mouse.rayCoords,
+      //     this.camera.instance
+      //   );
 
-        //   const intersects = this.raycaster.intersectObjects(
-        //     this.scene.children,
-        //     false
-        //   );
+      //   const intersects = this.raycaster.intersectObjects(
+      //     this.scene.children,
+      //     false
+      //   );
 
-        //   if (intersects.length > 0) {
-        //     // var target = new THREE.Vector3()
-        //     // this.object.getWorldPosition(target)
-        //     // console.log( intersects[0].object)
-        //     // console.log(target)
+      //   if (intersects.length > 0) {
+      //     // var target = new THREE.Vector3()
+      //     // this.object.getWorldPosition(target)
+      //     // console.log( intersects[0].object)
+      //     // console.log(target)
 
-        //     console.log(intersects)
-        //     id = intersects[0].object.name;
+      //     console.log(intersects)
+      //     id = intersects[0].object.name;
 
-        //     if (id === TV) {
-        //       event.seenScreen = TV;
-        //     } else if (id === MONITOR) {
-        //       event.seenScreen = MONITOR;
-        //     }
-        //   } else {
-        //     event.seenScreen = null;
-        //   }
-          
-        // }
+      //     if (id === TV) {
+      //       event.seenScreen = TV;
+      //     } else if (id === MONITOR) {
+      //       event.seenScreen = MONITOR;
+      //     }
+      //   } else {
+      //     event.seenScreen = null;
+      //   }
+        
+      // }
 
 
-        this.seenScreen = event.seenScreen;
-        this.inTVScreen = event.seenScreen === TV;
-        this.inComputer = event.seenScreen === MONITOR;
+      this.seenScreen = event.seenScreen;
+      this.inTVScreen = event.seenScreen === TV;
+      this.inComputer = event.seenScreen === MONITOR;
 
-        if (this.inTVScreen && (this.prevSeen !== TV || this.prevSeen === null)) {
+      if (this.inTVScreen && (this.prevSeen !== TV || this.prevSeen === null)) {
 
-          console.log('triggereando')
-          this.camera.trigger("enterTV");
-        }
+        console.log('triggereando')
+        this.camera.trigger("enterTV");
+      }
 
-        if (this.inComputer && (this.prevSeen !== MONITOR || this.prevSeen === null)) {
-          this.camera.trigger("enterMonitor");
-        }
+      if (this.inComputer && (this.prevSeen !== MONITOR || this.prevSeen === null)) {
+        this.camera.trigger("enterMonitor");
+      }
 
-        if (!this.inTVScreen && this.prevSeen === TV && !this.mouseClickInProgress) {
-          this.camera.trigger("leftTV");
-        }
+      if (!this.inTVScreen && this.prevSeen === TV && !this.mouseClickInProgress) {
+        this.camera.trigger("leftTV");
+      }
 
-        if (!this.inComputer && this.prevSeen === MONITOR && !this.mouseClickInProgress) {
-          this.camera.trigger("leftMonitor");
-        }
+      if (!this.inComputer && this.prevSeen === MONITOR && !this.mouseClickInProgress) {
+        this.camera.trigger("leftMonitor");
+      }
 
-        if (this.prevSeen === TV && this.mouseClickInProgress) {
-            if (!this.inTVScreen) {
-                this.shouldLeaveTV = true;
-            } else {
-                this.shouldLeaveTV = false;
-            }
-        }
-
-        if (this.prevSeen === MONITOR && this.mouseClickInProgress) {
-          if (!this.inComputer) {
-              this.shouldLeaveComputer = true;
+      if (this.prevSeen === TV && this.mouseClickInProgress) {
+          if (!this.inTVScreen) {
+              this.shouldLeaveTV = true;
           } else {
-              this.shouldLeaveComputer = false;
+              this.shouldLeaveTV = false;
           }
       }
 
+      if (this.prevSeen === MONITOR && this.mouseClickInProgress) {
+        if (!this.inComputer) {
+            this.shouldLeaveComputer = true;
+        } else {
+            this.shouldLeaveComputer = false;
+        }
+    }
 
-        //this.experience.mouse.trigger("mousemove", [event]);
 
-        this.prevSeen = this.seenScreen;
-      }, 50),
+      //this.experience.mouse.trigger("mousemove", [event]);
+
+      this.prevSeen = this.seenScreen;
+    }, 50)
+  }
+
+
+  downStart = () => {
+    return (event) => {
+      this.seenScreen = event.seenScreen;
+      this.inTVScreen = event.seenScreen === TV;
+      this.inComputer = event.seenScreen === MONITOR;
+
+      //this.experience.mouse.trigger("mousedown", [event]);
+      this.mouseClickInProgress = true;
+
+      this.prevSeen = this.seenScreen;
+    }
+  }
+
+  upEnd = () => {
+    return (event) => {
+      this.seenScreen = event.seenScreen;
+      this.inTVScreen = event.seenScreen === TV;
+      this.inComputer = event.seenScreen === MONITOR;
+
+      //this.experience.mouse.trigger("mouseup", [event]);
+
+      if (this.shouldLeaveTV) {
+        this.camera.trigger("leftTV");
+        this.shouldLeaveTV = false;
+      } else if (this.shouldLeaveComputer) {
+        this.camera.trigger("leftMonitor");
+        this.shouldLeaveComputer = false;
+      }
+
+      this.mouseClickInProgress = false;
+      this.prevSeen = this.seenScreen;
+    }
+  }
+
+
+  initializeScreenEvents() {
+    document.addEventListener(
+      "mousemove",
+      this.movement(),
+      false
+    );
+
+    document.addEventListener(
+      "touchmove",
+      this.movement(),
       false
     );
 
     document.addEventListener(
       "mousedown",
-      (event) => {
-        this.seenScreen = event.seenScreen;
-        this.inTVScreen = event.seenScreen === TV;
-        this.inComputer = event.seenScreen === MONITOR;
-
-        //this.experience.mouse.trigger("mousedown", [event]);
-        this.mouseClickInProgress = true;
-
-        this.prevSeen = this.seenScreen;
-      },
+      this.downStart(),
       false
     );
+
+    document.addEventListener(
+      "touchstart",
+      this.downStart(),
+      false
+    );
+
     document.addEventListener(
       "mouseup",
-      (event) => {
-        this.seenScreen = event.seenScreen;
-        this.inTVScreen = event.seenScreen === TV;
-        this.inComputer = event.seenScreen === MONITOR;
+      this.upEnd(),
+      false
+    );
 
-        //this.experience.mouse.trigger("mouseup", [event]);
-
-        if (this.shouldLeaveTV) {
-          this.camera.trigger("leftTV");
-          this.shouldLeaveTV = false;
-        } else if (this.shouldLeaveComputer) {
-          this.camera.trigger("leftMonitor");
-          this.shouldLeaveComputer = false;
-        }
-
-        this.mouseClickInProgress = false;
-        this.prevSeen = this.seenScreen;
-      },
+    document.addEventListener(
+      "touchend",
+      this.upEnd(),
       false
     );
   }
