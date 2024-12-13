@@ -73,7 +73,7 @@ export default class Screens {
         object: null,
         mesh: null,
         name: MONITOR,
-        src: "http://localhost:3000/"
+        src: "https://os.diegoygaby.com/"
       }
       
     }
@@ -182,8 +182,6 @@ export default class Screens {
       this.inComputer = event.seenScreen === MONITOR;
 
       if (this.inTVScreen && (this.prevSeen !== TV || this.prevSeen === null)) {
-
-        console.log('triggereando')
         this.camera.trigger("enterTV");
       }
 
