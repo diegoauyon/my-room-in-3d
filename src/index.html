@@ -1,66 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Boda Gaby y Diego</title>
-    <meta itemprop="name" content="Boda Diego y Gaby">
-    <meta itemprop="image" content="https://www.cunard.com/content/dam/cunard/inventory-assets/ports/CEQ/CEQ.jpg.1614955754806.image.750.563.low.jpg">
-    <meta property="og:site_name" content="Boda Diego y Gaby">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Boda Diego y Gaby">
-    <meta property="og:description" content="Boda Diego y Gaby">
-    <meta property="og:image" content="https://www.cunard.com/content/dam/cunard/inventory-assets/ports/CEQ/CEQ.jpg.1614955754806.image.750.563.low.jpg">
-    <link rel="manifest" href="manifest.json">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <meta itemprop="name" content="Boda Diego y Gaby" />
+    <meta
+      itemprop="image"
+      content="https://www.cunard.com/content/dam/cunard/inventory-assets/ports/CEQ/CEQ.jpg.1614955754806.image.750.563.low.jpg"
+    />
+    <meta property="og:site_name" content="Boda Diego y Gaby" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Boda Diego y Gaby" />
+    <meta property="og:description" content="Boda Diego y Gaby" />
+    <meta
+      property="og:image"
+      content="https://www.cunard.com/content/dam/cunard/inventory-assets/ports/CEQ/CEQ.jpg.1614955754806.image.750.563.low.jpg"
+    />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <!-- latest -->
+    <link
+      href="https://unpkg.com/nes.css@latest/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <!-- core style only -->
+    <link
+      href="https://unpkg.com/nes.css/css/nes-core.min.css"
+      rel="stylesheet"
+    />
     <style>
-        body {
-          background-color: rgb(0, 0, 0);
-          margin: 0;
-        }
-    
-        .experience, #tv-screen {
-          pointer-events: none;
-        }
-    
-        #ui-app {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          box-sizing: border-box;
-        }
-    
-        #css {
-          cursor: pointer;
-          z-index: 1;
-        }
+      body {
+        background-color: rgb(0, 0, 0);
+        margin: 0;
+      }
 
-        #cssMonitor {
-          cursor: pointer;
-          z-index: 2;
+      .experience,
+      #tv-screen {
+        pointer-events: none;
+      }
+
+      #ui-app {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+      }
+
+      #css {
+        cursor: pointer;
+        z-index: 1;
+      }
+
+      #cssMonitor {
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      #monitor {
+        z-index: 4;
+      }
+
+      #tv {
+        z-index: 3;
+      }
+
+      .container {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+
+      .nes-btn {
+        font-size: 9px;
+      }
+
+      @media (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+        .nes-btn {
+          border-image-repeat: stretch;
         }
-
-
-        #monitor {
-          z-index: 4;
-        }
-
-        #tv {
-          z-index: 3;
-        }
-
-
-      </style>
-</head>
-<body>
+      }
+    </style>
+  </head>
+  <body>
     <div id="css"></div>
     <div id="cssMonitor"></div>
     <div class="experience"></div>
     <div id="overlay"></div>
-   </body>
+
+    <div class="container">
+      <button type="button" id="button-tv" class="nes-btn is-primary">
+        Ver tele
+      </button>
+      <button type="button" id="button-monitor" class="nes-btn is-success">
+        Ver PC
+      </button>
+      <button type="button" id="button-cuarto" class="nes-btn">
+        Ver cuarto
+      </button>
+    </div>
+  </body>
 </html>

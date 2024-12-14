@@ -30,7 +30,7 @@ const monitorScaleX = 0.001875;
 const monitorScaleY = 0.00134;
 
 export default class Screens {
-  constructor() {
+  constructor(chair) {
     this.experience = new Experience();
     this.resources = this.experience.resources;
     this.debug = this.experience.debug;
@@ -41,11 +41,18 @@ export default class Screens {
     this.world = this.experience.world;
     this.time = this.experience.time;
     this.mouse = this.experience.mouse;
+    this.sizes = this.experience.sizes
     //this.raycaster = this.experience.raycaster;
     this.camera = this.experience.camera;
 
     this.screenSize = new THREE.Vector2(TV_SCREEN_SIZE.w, TV_SCREEN_SIZE.h);
     this.cameraControls = this.experience.renderer.cameraControls;
+    this.clock = this.experience.renderer.clock;
+
+    //botones
+    this.btnTv = document.getElementById("button-tv");
+    this.btnMonitor = document.getElementById("button-monitor");
+    this.btnRoom = document.getElementById("button-cuarto");
 
     this.screens = {
       tv: {
@@ -82,32 +89,61 @@ export default class Screens {
     this.createIframe(TV);
     this.createIframe(MONITOR);
 
-    // setTimeout(async () => {
-    //         this.transitionSequenceB()
-    //     }, 15000);
+    this.autoRotate = true;
+    this.rotateToRight = true;
+
+    this.chair = chair;
+
+    this._centerPosition = new THREE.Vector3();
+    this._normal = new THREE.Vector3();
+    this._cameraPosition = new THREE.Vector3();
+    this.isMobile = this.sizes.width < 1024
+
+    
+
     this.initializeScreenEvents();
   }
 
+
+  fitToRect = ( rect, number ) => {
+
+    const rectWidth = rect.geometry.parameters.width;
+    const rectHeight = rect.geometry.parameters.height;
+  
+    //rect.updateMatrixWorld();
+    const rectCenterPosition = this._centerPosition.copy( rect.position );
+    const rectNormal = this._normal.set( 0, 0, 1 ).applyQuaternion( rect.quaternion );
+    const distance = this.cameraControls.getDistanceToFitBox( rectWidth, rectHeight, 0 );
+    console.log(distance, rectCenterPosition)
+    const cameraPosition = this._cameraPosition.copy( rectNormal ).multiplyScalar(  distance/number ).add( rectCenterPosition );
+  
+    this.cameraControls.setLookAt(
+      cameraPosition.x, cameraPosition.y, cameraPosition.z,
+      rectCenterPosition.x, rectCenterPosition.y, rectCenterPosition.z,
+      true,
+    );
+  
+  }
+
   async transitionToTV() {
-    console.log("Starting sequence");
-
-    console.log("Performing fit");
-    await this.cameraControls.fitToSphere(this.screens.tv.mesh, true);
-
-    console.log("Sequence complete");
+    this.autoRotate = false;
+    //await this.cameraControls.fitToSphere(this.screens.tv.mesh, true);
+    const num = this.isMobile ? 300 : 260
+    this.fitToRect(this.screens.tv.mesh, num)
   }
 
   async transitionToMonitor() {
-    console.log("Starting sequence");
-
-    console.log("Performing fit");
-    await this.cameraControls.fitToSphere(this.screens.monitor.mesh, true);
-
-    console.log("Sequence complete");
+    this.autoRotate = false;
+    //await this.cameraControls.fitToBox(this.screens.monitor.mesh, true);
+    const num = this.isMobile ? 650 : 500
+    this.fitToRect(this.screens.monitor.mesh, num)
+    this.chair.model.group.visible = false;
   }
 
   async resetPosition() {
-    await this.cameraControls.reset( true );
+    this.chair.model.group.visible = true;
+    this.autoRotate = true;
+    await this.cameraControls.reset(true);
   }
 
   /**
@@ -163,6 +199,7 @@ export default class Screens {
   movement() {
     return debounce((event) => {
       const id = event.target.id;
+
       if (id === TV) {
         event.seenScreen = TV;
       } else if (id === MONITOR) {
@@ -277,6 +314,18 @@ export default class Screens {
     document.addEventListener("mouseup", this.upEnd(), false);
 
     document.addEventListener("touchend", this.upEnd(), false);
+
+    this.btnTv.addEventListener("click", () => {
+      this.transitionToTV();
+    });
+
+    this.btnMonitor.addEventListener("click", () => {
+      this.transitionToMonitor();
+    });
+
+    this.btnRoom.addEventListener("click", () => {
+      this.resetPosition();
+    });
   }
 
   /**
@@ -348,8 +397,26 @@ export default class Screens {
 
   setAnimation() {}
 
-  update() {
-//    console.log(this.camera.instance);
 
+  //angle -1.6647003920688712 newAngle -1.6648400184091607
+
+  update() {
+    if (this.autoRotate) {
+      const delta = this.clock.getDelta();
+
+      const angle = this.cameraControls.azimuthAngle
+      const diff = (20 * delta * THREE.MathUtils.DEG2RAD)
+      let newAngle = angle;
+
+      if (angle <= -1.66) {
+        this.rotateToRight = true;
+      } else if (angle >= 0.02) {
+        this.rotateToRight = false;
+      }
+
+      if (newAngle) {
+      this.cameraControls.azimuthAngle = this.rotateToRight ? angle + diff : angle - diff;
+      }
+    }
   }
 }

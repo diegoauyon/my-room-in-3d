@@ -79,7 +79,7 @@ export default class World
             '/assets/proposal.webm'
         )
 
-        this.screens = new Screens();
+        this.screens = new Screens(this.topChair);
     }
 
     setCat() {
