@@ -4,7 +4,7 @@ import Experience from './Experience.js'
 import vertexShader from './shaders/baked/vertex.glsl'
 import fragmentShader from './shaders/baked/fragment.glsl'
 
-export default class Baked
+export default class CoffeeSteam
 {
     constructor()
     {
@@ -19,7 +19,7 @@ export default class Baked
         {
             this.debugFolder = this.debug.addFolder({
                 title: 'baked',
-                expanded: false
+                expanded: true
             })
         }
 
@@ -29,6 +29,7 @@ export default class Baked
     setModel()
     {
         this.model = {}
+        
         this.model.mesh = this.resources.items.roomModel.scene.children[0]
 
         this.model.bakedDayTexture = this.resources.items.bakedDayTexture
@@ -158,13 +159,11 @@ export default class Baked
         }
     }
 
-
     update() {
         const timeElapsed = this.time.elapsed * 0.001
         const timeElapsedSin = (Math.sin(timeElapsed) +1) / 2
         const value = timeElapsedSin * 0.5 
         
         this.model.material.uniforms.uNightMix.value = value
-        //this.model.material.uniforms.uNeutralMix.value = value
     }
 }

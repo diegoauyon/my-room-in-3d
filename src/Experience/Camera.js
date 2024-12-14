@@ -1,21 +1,13 @@
 import * as THREE from 'three'
 import Experience from './Experience.js'
-import TWEEN from '@tweenjs/tween.js';
-import { IdleKeyframe, LoadingKeyframe, MonitorKeyframe, TVKeyframe } from './CameraKeyframes.js'
-import UIEventBus from './Utils/EventBus.js';
-import EventEmitter from './Utils/EventEmitter.js';
-import BezierEasing from 'bezier-easing';
 
-const IDLE = 'idle'
-const MONITOR = 'monitor'
-const TV = 'tv'
-const DESK = 'desk'
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
-export default class Camera extends EventEmitter
+
+export default class Camera
 {
     constructor(_options)
     {
-        super();
         // Options
         this.experience = new Experience()
         this.config = this.experience.config
@@ -25,34 +17,11 @@ export default class Camera extends EventEmitter
         this.targetElement = this.experience.targetElement
         this.scene = this.experience.scene
 
-        this.freeCam = false;
-        this.position = new THREE.Vector3(0, 0, 0);
-        this.focalPoint = new THREE.Vector3(0, 0, 0);
-        this.quaternion = undefined
-        this.isMobile = this.sizes.width < 1024
-
         // Set up
         this.mode = 'default' // default \ debug
 
-
-        this.keyframes = {
-            idle: new IdleKeyframe(),
-            monitor: new MonitorKeyframe(),
-            tv: new TVKeyframe(),
-            desk: new LoadingKeyframe(),
-        };
-
-        
         this.setInstance()
         this.setModes()
-
-
-        if (!this.isMobile) {
-            this.setPostLoadTransition();
-            this.setMonitorListeners();
-            this.setTVListeners()
-        }
-        
     }
 
     setInstance()
@@ -60,81 +29,9 @@ export default class Camera extends EventEmitter
         // Set up
         this.instance = new THREE.PerspectiveCamera(20, this.config.width / this.config.height, 0.1, 150)
         this.instance.rotation.reorder('YXZ')
-        this.currentKeyframe = IDLE;
 
         this.scene.add(this.instance)
     }
-
-    transition(
-        key,
-        duration = 1000,
-        easing,
-        callback,
-    ) {
-        if (this.currentKeyframe === key) return;
-        //console.log('transitioning to', key);
-
-        if (this.targetKeyframe) TWEEN.removeAll();
-
-        this.currentKeyframe = undefined;
-        this.targetKeyframe = key;
-
-        const keyframe = this.keyframes[key];
-
-        const posTween = new TWEEN.Tween(this.position)
-            .to(keyframe.position, duration)
-            .easing(easing || TWEEN.Easing.Quintic.InOut)
-            .onComplete(() => {
-                this.currentKeyframe = key;
-                this.targetKeyframe = undefined;
-                if (callback) callback();
-            });
-
-        const focTween = new TWEEN.Tween(this.focalPoint)
-            .to(keyframe.focalPoint, duration)
-            .easing(easing || TWEEN.Easing.Quintic.InOut);
-
-        posTween.start();
-        focTween.start();
-    }
-
-    setPostLoadTransition() {
-        this.transition(IDLE, 2500, TWEEN.Easing.Elastic.In);
-    }
-
-    setTVListeners() {
-        this.on('enterTV', () => {
-
-            //console.log('!!!!!!!!!enterTV');
-            this.transition(
-                TV,
-                2000,
-                BezierEasing(0.13, 0.99, 0, 1)
-            );
-            //UIEventBus.dispatch('enterTV', {});
-        });
-        this.on('leftTV', () => {
-            this.transition(IDLE);
-            //UIEventBus.dispatch('leftTV', {});
-        });
-    }
-
-    setMonitorListeners() {
-        this.on('enterMonitor', () => {
-            //console.log('!!!!!!!!!enterMonitor');
-            this.transition(
-                MONITOR,
-                2000,
-                BezierEasing(0.13, 0.99, 0, 1)
-            );
-           // UIEventBus.dispatch('enterMonitor', {});
-        });
-        this.on('leftMonitor', () => {
-            this.transition(IDLE);
-           // UIEventBus.dispatch('leftMonitor', {});
-        });
-    }
-
 
     setModes()
     {
@@ -145,65 +42,47 @@ export default class Camera extends EventEmitter
         this.modes.default.instance = this.instance.clone()
         this.modes.default.instance.rotation.reorder('YXZ')
 
+        // Debug
+        // this.modes.debug = {}
+        // this.modes.debug.instance = this.instance.clone()
+        // this.modes.debug.instance.rotation.reorder('YXZ')
+        // this.modes.debug.instance.position.set(- 15, 15, 15)
+        
+        // this.modes.debug.orbitControls = new OrbitControls(this.modes.debug.instance, this.targetElement)
+        // this.modes.debug.orbitControls.enabled = false
+        // this.modes.debug.orbitControls.screenSpacePanning = true
+        // this.modes.debug.orbitControls.enableKeys = false
+        // this.modes.debug.orbitControls.zoomSpeed = 0.25
+        // this.modes.debug.orbitControls.enableDamping = true
+        // this.modes.debug.orbitControls.update()
     }
 
 
     resize()
     {
-        if (this.isMobile) {
-            this.modes.default.instance.aspect = this.config.width / this.config.height
-            this.modes.default.instance.updateProjectionMatrix()
-        } else {
-            this.instance.aspect = this.config.width / this.config.height
-            this.instance.updateProjectionMatrix()
-        }
+        this.instance.aspect = this.config.width / this.config.height
+        this.instance.updateProjectionMatrix()
+
+        this.modes.default.instance.aspect = this.config.width / this.config.height
+        this.modes.default.instance.updateProjectionMatrix()
+
+        // this.modes.debug.instance.aspect = this.config.width / this.config.height
+        // this.modes.debug.instance.updateProjectionMatrix()
     }
 
     update()
     {
-        TWEEN.update();
-
-
-
-        for (const key in this.keyframes) {
-            const _key = key;
-            this.keyframes[_key].update();
-        }
-
-        if (!this.isMobile) {
-            if (this.currentKeyframe) {
-                const keyframe = this.keyframes[this.currentKeyframe];
-                this.position.copy(keyframe.position);
-                this.focalPoint.copy(keyframe.focalPoint);
-                
-                if (keyframe?.quaternion) {
-                    this.quaternion.copy(keyframe.quaternion);
-                } else {
-                    this.quaternion = undefined;
-                }
-            }
-            
-            this.instance.position.copy(this.position);
-            this.instance.lookAt(this.focalPoint);
-    
-            if (this.quaternion){
-                this.instance.quaternion.copy(this.quaternion)
-            }
-        } else {
-            this.instance.position.copy(this.modes.default.instance.position)
-            this.instance.quaternion.copy(this.modes.default.instance.quaternion)
-            this.instance.updateMatrixWorld()
-        }
-        
+        // Update debug orbit controls
+        //this.modes.debug.orbitControls.update()
 
         // Apply coordinates
-        // this.instance.position.copy(this.modes[this.mode].instance.position)
-        // this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion)
-        //this.instance.updateMatrixWorld() // To be used in projection
+        this.instance.position.copy(this.modes[this.mode].instance.position)
+        this.instance.quaternion.copy(this.modes[this.mode].instance.quaternion)
+        this.instance.updateMatrixWorld() // To be used in projection
     }
 
     destroy()
     {
-        this.modes.debug.orbitControls.destroy()
+        //this.modes.debug.orbitControls.destroy()
     }
 }

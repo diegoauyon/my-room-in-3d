@@ -10,9 +10,9 @@ import Renderer from './Renderer.js'
 import Camera from './Camera.js'
 import World from './World.js'
 import Navigation from './Navigation.js'
+import Mouse from './Utils/Mouse.js'
 
 import assets from './assets.js'
-import Mouse from './Utils/Mouse.js'
 
 export default class Experience
 {
@@ -35,25 +35,22 @@ export default class Experience
         {
             console.warn('Missing \'targetElement\' property')
             return
-        } 
+        }
 
         this.time = new Time()
         this.sizes = new Sizes()
-
-        //this.setMouse()
         this.setConfig()
+        this.setMouse()
         this.setStats()
         this.setDebug()
-        this.setCSSScene()
         this.setScene()
+        this.setCSSScene()
         this.setCamera()
         this.setRenderer()
         this.setResources()
         this.setWorld()
-        this.setNavigation()
-        
-        this.setRaycaster()
-        
+        //this.setNavigation()
+        //this.setRaycaster()
         
         this.sizes.on('resize', () =>
         {
@@ -61,24 +58,6 @@ export default class Experience
         })
 
         this.update()
-    }
-
-    // static getInstance(_options = {})
-    // {
-    //     console.log(Experience.instance)
-    //     if(Experience.instance)
-    //     {
-    //         return Experience.instance
-    //     }
-        
-    //     console.log('create')
-    //     Experience.instance = new Experience(_options)
-        
-    //     return Experience.instance
-    // }
-
-    setRaycaster() {
-        this.raycaster = new THREE.Raycaster();
     }
 
     setConfig()
@@ -98,6 +77,10 @@ export default class Experience
         // Debug
         // this.config.debug = window.location.hash === '#debug'
         this.config.debug = window.location.hash === '#debug'
+    }
+
+    setRaycaster() {
+        this.raycaster = new THREE.Raycaster();
     }
 
     setStats()
@@ -138,12 +121,14 @@ export default class Experience
         this.renderer = new Renderer({ rendererInstance: this.rendererInstance })
 
         this.targetElement.appendChild(this.renderer.instance.domElement)
-        this.cssElement?.appendChild(this.renderer.cssInstance.domElement);
 
-        if (this.cssElementMonitor) {
+        if (this?.cssElement && this?.renderer?.cssInstance) {
+            this.cssElement.appendChild(this.renderer.cssInstance.domElement);
+        }
+
+        if (this?.cssElementMonitor && this?.renderer?.cssInstanceMonitor) {
             this.cssElementMonitor?.appendChild(this.renderer.cssInstanceMonitor.domElement);
         }
-   
     }
 
     setResources()
@@ -161,12 +146,10 @@ export default class Experience
         this.navigation = new Navigation()
     }
 
-
     setMouse()
     {
         this.mouse = new Mouse()
     }
-
 
     update()
     {

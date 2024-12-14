@@ -32,7 +32,7 @@ export default class Cat
 
         this.model.group = new THREE.Group()
         this.model.group.position.x = 3.804
-        this.model.group.position.y = 0.435
+        this.model.group.position.y = 0.335
         this.model.group.position.z = -1.848
         this.model.group.rotation.y = - Math.PI * 0.5
 

@@ -1,18 +1,15 @@
 import * as THREE from 'three'
 import Experience from './Experience.js'
 import Baked from './Baked.js'
-import Background from './Background.js'
 import GoogleLeds from './GoogleLeds.js'
 import LoupedeckButtons from './LoupedeckButtons.js'
 import CoffeeSteam from './CoffeeSteam.js'
 import TopChair from './TopChair.js'
 import ElgatoLight from './ElgatoLight.js'
-//import BouncingLogo from './BouncingLogo.js'
-//import TVScreen from './TVScreen.js'
 import Screen from './Screen.js'
-import Cat from './Cat.js'
+import Background from './Background.js'
 import Screens from './Screens.js'
-//import MonitorScreen from './Monitor.js'
+import Cat from './Cat.js'
 
 export default class World
 {
@@ -34,10 +31,7 @@ export default class World
                 this.setCoffeeSteam()
                 this.setTopChair()
                 this.setElgatoLight()
-                //this.setBouncingLogo()
                 this.setScreens()
-                // this.setTVScreen()
-                // this.setMonitorScreen()
                 this.setCat()
             }
         })
@@ -78,23 +72,6 @@ export default class World
         this.elgatoLight = new ElgatoLight()
     }
 
-    setBouncingLogo()
-    {
-        this.bouncingLogo = new BouncingLogo()
-    }
-
-    setTVScreen() {
-        this.tvScreen = new TVScreen()
-    }
-
-    setMonitorScreen() {
-        this.monitorScreen = new MonitorScreen()
-    }
-
-    setCat() {
-        this.cat = new Cat()
-    }
-
     setScreens()
     {
         this.macScreen = new Screen(
@@ -104,6 +81,11 @@ export default class World
 
         this.screens = new Screens();
     }
+
+    setCat() {
+        this.cat = new Cat()
+    }
+
 
     resize()
     {
@@ -129,11 +111,12 @@ export default class World
         if(this.bouncingLogo)
             this.bouncingLogo.update()
 
+
         if(this.background)
             this.background.update()
 
-        if(this.cat)
-            this.cat.update()
+        if(this.screens)
+            this.screens.update()
     }
 
     destroy()
