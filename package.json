@@ -1,5 +1,6 @@
 {
-  "repository": "#",
+  "name": "wedding-3d-room",
+  "repository": "https://github.com/diegoauyon/my-room-in-3d",
   "license": "UNLICENSED",
   "scripts": {
     "build": "webpack --config ./bundler/webpack.prod.js",
